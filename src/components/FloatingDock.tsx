@@ -116,11 +116,11 @@ export default function FloatingDock() {
             </DockIcon>
           ))}
 
-          <Separator orientation="vertical" className="h-full" />
+          <Separator orientation="vertical" className="h-full hidden sm:block" />
 
           {/* Social Links */}
           {SOCIAL_ITEMS.map((social) => (
-            <DockIcon key={social.name}>
+            <DockIcon key={social.name} className="hidden sm:flex">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link
@@ -143,7 +143,7 @@ export default function FloatingDock() {
             </DockIcon>
           ))}
 
-          <Separator orientation="vertical" className="h-full" />
+          <Separator orientation="vertical" className="h-full hidden sm:block" />
 
           {/* Theme Toggle */}
           <DockIcon>

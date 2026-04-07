@@ -49,7 +49,7 @@ export default function ContactWidget() {
   };
 
   return (
-    <div ref={widgetRef} className="fixed bottom-6 right-6 z-50">
+    <div ref={widgetRef} className="fixed bottom-22 sm:bottom-6 right-4 sm:right-6 z-50">
       {/* Popup Form */}
       <AnimatePresence>
         {isOpen && (
@@ -58,7 +58,7 @@ export default function ContactWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="absolute bottom-16 right-0 w-[340px] sm:w-[380px] rounded-2xl border border-white/[0.08] bg-[#1a1a1a] shadow-2xl shadow-black/50 overflow-hidden"
+            className="absolute bottom-16 right-0 w-[300px] sm:w-[380px] rounded-2xl border border-white/[0.08] bg-[#1a1a1a] shadow-2xl shadow-black/50 overflow-hidden"
           >
             {/* Header */}
             <div className="px-5 pt-5 pb-3">
@@ -175,7 +175,7 @@ export default function ContactWidget() {
         onClick={() => setIsOpen(!isOpen)}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className={`relative w-12 h-12 rounded-full bg-[#2a2a2a] border border-white/[0.08] shadow-[0_4px_20px_rgba(0,0,0,0.5)] flex items-center justify-center text-neutral-300 hover:text-white hover:bg-[#33] transition-all duration-300 ${!isOpen ? "animate-float hover:shadow-[0_4px_25px_rgba(99,102,241,0.2)]" : ""}`}
+        className={`relative w-12 h-12 rounded-full bg-[#2a2a2a] border border-white/[0.08] shadow-[0_4px_20px_rgba(0,0,0,0.5)] flex items-center justify-center text-neutral-300 hover:text-white hover:bg-[#333] transition-all duration-300 ${!isOpen ? "animate-float hover:shadow-[0_4px_25px_rgba(99,102,241,0.2)]" : ""}`}
         aria-label="Open contact form"
         id="contact-widget-trigger"
       >
