@@ -24,7 +24,7 @@ export default function Hero() {
   return (
     <motion.section
       id="hero"
-      className="pt-28 pb-8"
+      className="pt-16 pb-8"
       initial="hidden"
       animate="visible"
       variants={stagger}

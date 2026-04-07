@@ -2,8 +2,10 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Globe, ExternalLink, Play } from "lucide-react";
+import Link from "next/link";
+import { Globe, ExternalLink, Play, ArrowRight } from "lucide-react";
 import { SiGithub } from "react-icons/si";
+import { useRouter } from "next/navigation";
 import { projects } from "@/data/projects";
 
 const fadeInUp = {
@@ -12,22 +14,32 @@ const fadeInUp = {
 };
 
 const techIconColors: Record<string, string> = {
-  "Next.js": "#ffffff",
+  "Next.js 16": "#ffffff",
+  "React 19": "#61DAFB",
   TypeScript: "#3178C6",
-  "Tailwind CSS": "#06B6D4",
-  React: "#61DAFB",
-  "Node.js": "#339933",
+  "Tailwind CSS 4": "#06B6D4",
+  "Express 5": "#ffffff",
+  "Prisma 7": "#a1a1aa",
   PostgreSQL: "#4169E1",
-  Prisma: "#a1a1aa",
-  OpenAI: "#00A67E",
-  MongoDB: "#47A248",
-  "D3.js": "#F9A03C",
-  Redis: "#DC382D",
-  WebSocket: "#ffffff",
-  WebRTC: "#333333",
+  Stripe: "#635BFF",
+  "Shadcn UI": "#ffffff",
+  "Framer Motion": "#FF0066",
+  "TanStack Query": "#FF4154",
+  "Monaco Editor": "#007ACC",
+  "Google Gemini AI": "#4285F4",
+  "Judge0 API": "#22c55e",
+  "Passport.js": "#34E27A",
+  Bun: "#FBF0DF",
+  Zod: "#3E67B1",
+  Winston: "#a1a1aa",
+  Recharts: "#22B5BF",
+  "Radix UI": "#ffffff",
 };
 
 export default function Projects() {
+  const project = projects[0];
+  const router = useRouter();
+
   return (
     <motion.section
       id="projects"
@@ -47,15 +59,15 @@ export default function Projects() {
           <h2 className="text-2xl font-bold text-foreground">Projects</h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {projects.map((project) => (
-            <motion.div
-              key={project.id}
-              variants={fadeInUp}
-              className="group rounded-xl border border-border bg-card overflow-hidden card-hover"
-            >
+        {/* Single Featured Project */}
+        <motion.div variants={fadeInUp}>
+          <div 
+            onClick={() => router.push(`/projects/${project.slug}`)} 
+            className="block group cursor-pointer"
+          >
+            <div className="rounded-xl border border-border bg-card overflow-hidden card-hover">
               {/* Project Image */}
-              <div className="relative aspect-[16/10] overflow-hidden">
+              <div className="relative aspect-[16/8] overflow-hidden">
                 <Image
                   src={project.image}
                   alt={project.title}
@@ -68,57 +80,67 @@ export default function Projects() {
                 {/* Play button for video projects */}
                 {project.hasVideo && (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-12 h-12 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center border border-border group-hover:bg-background/90 group-hover:scale-110 transition-all duration-300">
-                      <Play size={18} className="text-foreground ml-0.5" fill="currentColor" />
+                    <div className="w-14 h-14 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center border border-border group-hover:bg-background/90 group-hover:scale-110 transition-all duration-300">
+                      <Play
+                        size={22}
+                        className="text-foreground ml-0.5"
+                        fill="currentColor"
+                      />
                     </div>
                   </div>
                 )}
               </div>
 
               {/* Project Info */}
-              <div className="p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-[15px] font-semibold text-foreground">
+              <div className="p-5">
+                <div className="flex items-center justify-between mb-1">
+                  <h3 className="text-lg font-semibold text-foreground">
                     {project.title}
                   </h3>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     {project.liveUrl && (
                       <a
                         href={project.liveUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-muted-foreground/70 hover:text-foreground transition-colors"
+                        onClick={(e) => e.stopPropagation()}
                       >
-                        <Globe size={14} />
+                        <Globe size={16} />
                       </a>
                     )}
-                    {project.githubUrl && (
+                    {project.githubClientUrl && (
                       <a
-                        href={project.githubUrl}
+                        href={project.githubClientUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-muted-foreground/70 hover:text-foreground transition-colors"
+                        onClick={(e) => e.stopPropagation()}
                       >
-                        <SiGithub size={14} />
+                        <SiGithub size={16} />
                       </a>
                     )}
                   </div>
                 </div>
 
-                <p className="text-xs text-muted-foreground leading-relaxed mb-3 line-clamp-2">
+                <p className="text-[13px] text-muted-foreground/80 mb-1 italic">
+                  {project.tagline}
+                </p>
+
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                   {project.description}
                 </p>
 
                 {/* Technologies */}
-                <div className="mb-3">
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1.5">
+                <div className="mb-4">
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-2">
                     Technologies
                   </p>
                   <div className="flex items-center gap-2 flex-wrap">
-                    {project.technologies.slice(0, 7).map((tech) => (
+                    {project.technologies.slice(0, 10).map((tech) => (
                       <div
                         key={tech}
-                        className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold"
+                        className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold"
                         style={{
                           backgroundColor: `${techIconColors[tech] || "#666"}20`,
                           color: techIconColors[tech] || "#666",
@@ -129,6 +151,11 @@ export default function Projects() {
                         {tech.charAt(0)}
                       </div>
                     ))}
+                    {project.technologies.length > 10 && (
+                      <span className="text-[11px] text-muted-foreground">
+                        +{project.technologies.length - 10} more
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -136,20 +163,22 @@ export default function Projects() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
                     <span
-                      className={`w-1.5 h-1.5 rounded-full ${project.status === "operational"
+                      className={`w-1.5 h-1.5 rounded-full ${
+                        project.status === "operational"
                           ? "bg-[#22c55e]"
                           : project.status === "building"
                             ? "bg-[#f59e0b]"
                             : "bg-[#666]"
-                        }`}
+                      }`}
                     />
                     <span
-                      className={`text-[10px] font-medium ${project.status === "operational"
+                      className={`text-[11px] font-medium ${
+                        project.status === "operational"
                           ? "text-[#22c55e]"
                           : project.status === "building"
                             ? "text-[#f59e0b]"
                             : "text-[#666]"
-                        }`}
+                      }`}
                     >
                       {project.status === "operational"
                         ? "All Systems Operational"
@@ -158,26 +187,17 @@ export default function Projects() {
                           : "Archived"}
                     </span>
                   </div>
-                  <a
-                    href={project.liveUrl || project.githubUrl || "#"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground transition-colors"
-                  >
+                  <span className="inline-flex items-center gap-1.5 text-[12px] text-muted-foreground group-hover:text-foreground transition-colors">
                     View Details
-                    <ExternalLink size={10} />
-                  </a>
+                    <ArrowRight
+                      size={12}
+                      className="group-hover:translate-x-0.5 transition-transform"
+                    />
+                  </span>
                 </div>
               </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Show All Button */}
-        <motion.div variants={fadeInUp} className="mt-6 text-center">
-          <button className="px-5 py-2.5 rounded-lg border border-border bg-card text-sm text-muted-foreground hover:text-foreground hover:bg-secondary hover:border-border transition-all duration-200">
-            Show all projects
-          </button>
+            </div>
+          </div>
         </motion.div>
       </div>
     </motion.section>

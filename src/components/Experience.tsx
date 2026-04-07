@@ -30,6 +30,10 @@ const techColors: Record<string, { bg: string; text: string }> = {
   PostgreSQL: { bg: "#4169E120", text: "#4169E1" },
   Prisma: { bg: "#2D374820", text: "#a1a1aa" },
   GraphQL: { bg: "#E1009820", text: "#E10098" },
+  OpenAI: { bg: "#00A67E20", text: "#00A67E" },
+  "D3.js": { bg: "#F9A03C20", text: "#F9A03C" },
+  WebSocket: { bg: "#ffffff15", text: "#ffffff" },
+  WebRTC: { bg: "#33333320", text: "#a1a1aa" },
 };
 
 export default function Experience() {
