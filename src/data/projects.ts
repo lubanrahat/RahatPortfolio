@@ -168,4 +168,106 @@ export const projects: Project[] = [
       "Deployed as Vercel serverless functions with optimized cold-start",
     ],
   },
+  {
+    id: "2",
+    slug: "skillbridge",
+    title: "SkillBridge",
+    tagline: "Connecting Passionate Learners with Expert Tutors.",
+    description:
+      "A modern, high-performance tutoring marketplace that connects students with verified experts for personalized learning. Features real-time search, interactive booking, and a comprehensive review system — built with Bun, Express.js, and Next.js.",
+    image: "/skillbridge.png",
+    technologies: [
+      "Next.js 16",
+      "React 19",
+      "TypeScript",
+      "Tailwind CSS 4",
+      "Bun",
+      "Express.js",
+      "Prisma 7",
+      "PostgreSQL",
+      "Radix UI",
+      "Shadcn UI",
+      "Lucide React",
+      "React Hook Form",
+      "Zod",
+      "JWT",
+      "Bcrypt",
+    ],
+    status: "operational",
+    liveUrl: "https://skill-bridge-client-ten.vercel.app",
+    githubClientUrl: "https://github.com/lubanrahat/SkillBridge",
+    githubServerUrl: "https://github.com/lubanrahat/SkillBridge",
+    hasVideo: false,
+    features: [
+      {
+        icon: "🔍",
+        title: "Advanced Tutor Discovery",
+        description:
+          "Effortlessly search and filter through hundreds of qualified tutors across 50+ subjects with real-time results.",
+      },
+      {
+        icon: "📅",
+        title: "Seamless Booking System",
+        description:
+          "Interactive scheduling interface with built-in conflict detection and instant session confirmations.",
+      },
+      {
+        icon: "🔐",
+        title: "Secure Authentication",
+        description:
+          "Robust user and tutor authentication using JWT and Bcrypt with role-based access control.",
+      },
+      {
+        icon: "⭐",
+        title: "Reviews & Ratings",
+        description:
+          "Transparent feedback system allowing students to rate and review tutors to ensure quality learning.",
+      },
+      {
+        icon: "💼",
+        title: "Admin Panel",
+        description:
+          "Comprehensive dashboard for platform administrators to manage users, bookings, and monitor activity.",
+      },
+      {
+        icon: "📱",
+        title: "Modern UI/UX",
+        description:
+          "Clean, responsive, and accessible interface built with Tailwind CSS v4 and Radix UI primitives.",
+      },
+    ],
+    architecture: `
+┌──────────────────────────────────────────────────────────┐
+│                     Next.js Client (App Router)          │
+│  ┌────────────┐  ┌────────────┐  ┌────────────────────┐  │
+│  │ Components  │  │   Hooks    │  │   API Utilities    │  │
+│  └─────┬──────┘  └─────┬──────┘  └────────┬───────────┘  │
+│        │               │                   │              │
+│  ┌─────▼───────────────▼───────────────────▼───────────┐  │
+│  │              State & Auth Management                 │  │
+│  │     React Hook Form + Zod + JWT Handling             │  │
+│  └─────────────────────┬───────────────────────────────┘  │
+│                        │                                  │
+│  ┌─────────────────────▼───────────────────────────────┐  │
+│  │              Bun / Express Backend Server            │  │
+│  │  Auth · Tutor Discovery · Booking · Reviews ···      │  │
+│  └─────────────────────┬───────────────────────────────┘  │
+│                        │                                  │
+│  ┌──────────┐  ┌───────▼──────┐  ┌──────────────────┐    │
+│  │ Middleware│  │  Controllers │  │   Prisma ORM     │    │
+│  └──────────┘  └───────┬──────┘  └────────┬─────────┘    │
+│                        │                   │              │
+│                  ┌─────▼──────┐      ┌─────▼──────┐       │
+│                  │ Express API│      │ PostgreSQL │       │
+│                  └────────────┘      └────────────┘       │
+└──────────────────────────────────────────────────────────┘`,
+    highlights: [
+      "Modular backend architecture powered by Bun and Express.js",
+      "Type-safe database interactions with Prisma 7 and PostgreSQL",
+      "Real-time booking conflict detection and schedule management",
+      "Premium UI component library using Tailwind CSS 4 and Radix UI",
+      "Secure role-based access control for Students, Tutors, and Admins",
+      "Validated form handling with React Hook Form and Zod",
+    ],
+  },
 ];

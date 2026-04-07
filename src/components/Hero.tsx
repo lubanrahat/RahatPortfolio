@@ -5,7 +5,6 @@ import Image from "next/image";
 import { FileText, Mail } from "lucide-react";
 import TechBadge from "./TechBadge";
 import SocialLinks from "./SocialLinks";
-import MusicStatus from "./MusicStatus";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -31,13 +30,13 @@ export default function Hero() {
     >
       <div className="max-w-[720px] mx-auto px-6">
         {/* Avatar */}
-        <motion.div variants={fadeInUp} className="mb-6">
+        <motion.div variants={fadeInUp} className="mb-6 ">
           <Image
             src="/me.jpg"
             alt="Luban Rahat"
             width={100}
             height={100}
-            className="rounded-2xl"
+            className="rounded-full border-2 border-border"
             priority
           />
         </motion.div>
@@ -112,10 +111,6 @@ export default function Hero() {
           <SocialLinks />
         </motion.div>
 
-        {/* Music Status */}
-        <motion.div variants={fadeInUp}>
-          <MusicStatus />
-        </motion.div>
       </div>
     </motion.section>
   );

@@ -6,6 +6,7 @@ import About from "@/components/About";
 import GitHubActivity from "@/components/GitHubActivity";
 import Blogs from "@/components/Blogs";
 import Footer from "@/components/Footer";
+import ContactWidget from "@/components/ContactWidget";
 
 export default function Home() {
   return (
@@ -20,6 +21,7 @@ export default function Home() {
         <Blogs />
       </main>
       <Footer />
+      <ContactWidget />
     </>
   );
 }

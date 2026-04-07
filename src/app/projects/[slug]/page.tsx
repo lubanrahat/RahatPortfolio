@@ -12,10 +12,9 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { SiGithub } from "react-icons/si";
+import { useParams } from "next/navigation";
 import { projects } from "@/data/projects";
 import FloatingDock from "@/components/FloatingDock";
-
-const project = projects[0];
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -30,64 +29,75 @@ const stagger = {
   },
 };
 
-const techCategories = [
-  {
-    label: "Frontend",
-    items: [
-      "Next.js 16",
-      "React 19",
-      "TypeScript",
-      "Tailwind CSS 4",
-      "Shadcn UI",
-      "Radix UI",
-      "Framer Motion",
-      "TanStack Query",
-      "Monaco Editor",
-      "Recharts",
-    ],
-  },
-  {
-    label: "Backend",
-    items: [
-      "Express 5",
-      "Prisma 7",
-      "PostgreSQL",
-      "Passport.js",
-      "Judge0 API",
-      "Bun",
-      "Zod",
-      "Winston",
-    ],
-  },
-  {
-    label: "Integrations",
-    items: ["Stripe", "Google Gemini AI"],
-  },
-];
-
-const apiEndpoints = [
-  { method: "POST", path: "/auth/register", desc: "Register a new account" },
-  { method: "POST", path: "/auth/login", desc: "Login with email & password" },
-  { method: "GET", path: "/auth/github", desc: "GitHub OAuth flow" },
-  { method: "GET", path: "/auth/google", desc: "Google OAuth flow" },
-  { method: "GET", path: "/problems", desc: "List problems with filters" },
-  { method: "GET", path: "/problems/:id", desc: "Get problem details" },
-  { method: "POST", path: "/execute-code", desc: "Execute code against test cases" },
-  { method: "POST", path: "/submission", desc: "Submit a solution" },
-  { method: "GET", path: "/leaderboard", desc: "Get global rankings" },
-  { method: "POST", path: "/payment/checkout", desc: "Create Stripe checkout" },
-  { method: "POST", path: "/ai-discussion/:id", desc: "Send AI message" },
-  { method: "GET", path: "/user/profile", desc: "Get user profile" },
-];
-
-const methodColors: Record<string, string> = {
-  GET: "text-[#22c55e] bg-[#22c55e]/10",
-  POST: "text-[#3b82f6] bg-[#3b82f6]/10",
-  PUT: "text-[#f59e0b] bg-[#f59e0b]/10",
-  DELETE: "text-[#ef4444] bg-[#ef4444]/10",
-};
-
 export default function ProjectDetailPage() {
+  const params = useParams();
+  const slug = params?.slug as string;
+  const project = projects.find((p) => p.slug === slug);
+
+  if (!project) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-foreground mb-4">Project not found</h1>
+          <Link href="/#projects" className="text-primary hover:underline transition-all">
+            Back to Projects
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const techCategories = [
+    {
+      label: "Frontend",
+      items: project.technologies.filter((t) => 
+        ["Next.js", "React", "TypeScript", "Tailwind", "Shadcn", "Radix", "Framer", "TanStack", "Monaco", "Recharts", "Lucide"].some(key => t.includes(key))
+      ),
+    },
+    {
+      label: "Backend & Core",
+      items: project.technologies.filter((t) => 
+        ["Express", "Prisma", "PostgreSQL", "Passport", "Judge0", "Bun", "Zod", "Winston", "JWT", "Bcrypt"].some(key => t.includes(key))
+      ),
+    },
+    {
+      label: "Others",
+      items: project.technologies.filter((t) => 
+        !["Next.js", "React", "TypeScript", "Tailwind", "Shadcn", "Radix", "Framer", "TanStack", "Monaco", "Recharts", "Lucide", "Express", "Prisma", "PostgreSQL", "Passport", "Judge0", "Bun", "Zod", "Winston", "JWT", "Bcrypt"].some(key => t.includes(key))
+      ),
+    },
+  ];
+
+  const apiEndpoints = project.slug === "codearena" ? [
+    { method: "POST", path: "/auth/register", desc: "Register a new account" },
+    { method: "POST", path: "/auth/login", desc: "Login with email & password" },
+    { method: "GET", path: "/auth/github", desc: "GitHub OAuth flow" },
+    { method: "GET", path: "/auth/google", desc: "Google OAuth flow" },
+    { method: "GET", path: "/problems", desc: "List problems with filters" },
+    { method: "GET", path: "/problems/:id", desc: "Get problem details" },
+    { method: "POST", path: "/execute-code", desc: "Execute code against test cases" },
+    { method: "POST", path: "/submission", desc: "Submit a solution" },
+    { method: "GET", path: "/leaderboard", desc: "Get global rankings" },
+    { method: "POST", path: "/payment/checkout", desc: "Create Stripe checkout" },
+    { method: "POST", path: "/ai-discussion/:id", desc: "Send AI message" },
+    { method: "GET", path: "/user/profile", desc: "Get user profile" },
+  ] : [
+    { method: "POST", path: "/auth/register", desc: "Register student/tutor" },
+    { method: "POST", path: "/auth/login", desc: "Authentication" },
+    { method: "GET", path: "/tutors", desc: "Search/filter tutors" },
+    { method: "POST", path: "/bookings", desc: "Create session booking" },
+    { method: "GET", path: "/reviews", desc: "Fetch tutor reviews" },
+    { method: "GET", path: "/categories", desc: "List subject categories" },
+    { method: "GET", path: "/admin/users", desc: "User management" },
+  ];
+
+  const methodColors: Record<string, string> = {
+    GET: "text-[#22c55e] bg-[#22c55e]/10",
+    POST: "text-[#3b82f6] bg-[#3b82f6]/10",
+    PUT: "text-[#f59e0b] bg-[#f59e0b]/10",
+    DELETE: "text-[#ef4444] bg-[#ef4444]/10",
+  };
+
   return (
     <>
       <FloatingDock />
@@ -103,7 +113,7 @@ export default function ProjectDetailPage() {
               className="object-cover"
               priority
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/70 to-background" />
+            <div className="absolute inset-0 bg-linear-to-b from-background/40 via-background/70 to-background" />
           </div>
 
           {/* Content overlaying the image */}
@@ -127,8 +137,8 @@ export default function ProjectDetailPage() {
 
               {/* Title */}
               <motion.div variants={fadeInUp} className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-[#6366f1]/20 border border-[#6366f1]/30 flex items-center justify-center text-lg font-bold text-[#6366f1]">
-                  C
+                <div className="w-10 h-10 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-lg font-bold text-primary">
+                  {project.title.charAt(0)}
                 </div>
                 <div>
                   <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
@@ -150,8 +160,8 @@ export default function ProjectDetailPage() {
                 className="flex items-center gap-4 flex-wrap"
               >
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-[#22c55e] animate-pulse" />
-                  <span className="text-xs font-medium text-[#22c55e]">
+                  <span className="w-2 h-2 rounded-full bg-green animate-pulse" />
+                  <span className="text-xs font-medium text-green">
                     All Systems Operational
                   </span>
                 </div>
@@ -272,21 +282,23 @@ export default function ProjectDetailPage() {
             </motion.h2>
             <div className="space-y-5">
               {techCategories.map((category) => (
-                <motion.div key={category.label} variants={fadeInUp}>
-                  <p className="text-[11px] text-muted-foreground uppercase tracking-wider mb-2.5">
-                    {category.label}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {category.items.map((tech) => (
-                      <span
-                        key={tech}
-                        className="px-3 py-1.5 rounded-lg text-[12px] font-medium border border-border bg-card text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-colors cursor-default"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </motion.div>
+                category.items.length > 0 && (
+                  <motion.div key={category.label} variants={fadeInUp}>
+                    <p className="text-[11px] text-muted-foreground uppercase tracking-wider mb-2.5">
+                      {category.label}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {category.items.map((tech) => (
+                        <span
+                          key={tech}
+                          className="px-3 py-1.5 rounded-lg text-[12px] font-medium border border-border bg-card text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-colors cursor-default"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </motion.div>
+                )
               ))}
             </div>
           </motion.section>
@@ -387,7 +399,7 @@ export default function ProjectDetailPage() {
                 >
                   <ChevronRight
                     size={14}
-                    className="text-[#6366f1] mt-0.5 shrink-0"
+                    className="text-primary mt-0.5 shrink-0"
                   />
                   <span className="leading-relaxed">{highlight}</span>
                 </motion.div>
@@ -395,58 +407,60 @@ export default function ProjectDetailPage() {
             </div>
           </motion.section>
 
-          {/* Database Schema Summary */}
-          <motion.section
-            className="py-8 border-t border-border"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={stagger}
-          >
-            <motion.h2
-              variants={fadeInUp}
-              className="text-lg font-semibold text-foreground mb-4"
+          {/* Database Schema Summary - Only show for CodeArena for now */}
+          {project.slug === "codearena" && (
+            <motion.section
+              className="py-8 border-t border-border"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              variants={stagger}
             >
-              Database Schema
-            </motion.h2>
-            <motion.p
-              variants={fadeInUp}
-              className="text-sm text-muted-foreground mb-4"
-            >
-              PostgreSQL database with{" "}
-              <span className="text-foreground font-semibold">15 models</span>{" "}
-              managed by Prisma:
-            </motion.p>
-            <motion.div
-              variants={fadeInUp}
-              className="grid grid-cols-2 sm:grid-cols-3 gap-2"
-            >
-              {[
-                "User",
-                "Profile",
-                "Problem",
-                "Submission",
-                "TestCaseResult",
-                "Solution",
-                "SolutionVote",
-                "SolutionComment",
-                "Playlist",
-                "ProblemInPlaylist",
-                "Payment",
-                "AiDiscussion",
-                "Bookmark",
-                "Contribution",
-                "ProblemSolved",
-              ].map((model) => (
-                <div
-                  key={model}
-                  className="px-3 py-2 rounded-lg border border-border bg-card text-[12px] font-mono text-muted-foreground hover:text-foreground hover:bg-secondary/30 transition-colors"
-                >
-                  {model}
-                </div>
-              ))}
-            </motion.div>
-          </motion.section>
+              <motion.h2
+                variants={fadeInUp}
+                className="text-lg font-semibold text-foreground mb-4"
+              >
+                Database Schema
+              </motion.h2>
+              <motion.p
+                variants={fadeInUp}
+                className="text-sm text-muted-foreground mb-4"
+              >
+                PostgreSQL database with{" "}
+                <span className="text-foreground font-semibold">15 models</span>{" "}
+                managed by Prisma:
+              </motion.p>
+              <motion.div
+                variants={fadeInUp}
+                className="grid grid-cols-2 sm:grid-cols-3 gap-2"
+              >
+                {[
+                  "User",
+                  "Profile",
+                  "Problem",
+                  "Submission",
+                  "TestCaseResult",
+                  "Solution",
+                  "SolutionVote",
+                  "SolutionComment",
+                  "Playlist",
+                  "ProblemInPlaylist",
+                  "Payment",
+                  "AiDiscussion",
+                  "Bookmark",
+                  "Contribution",
+                  "ProblemSolved",
+                ].map((model) => (
+                  <div
+                    key={model}
+                    className="px-3 py-2 rounded-lg border border-border bg-card text-[12px] font-mono text-muted-foreground hover:text-foreground hover:bg-secondary/30 transition-colors"
+                  >
+                    {model}
+                  </div>
+                ))}
+              </motion.div>
+            </motion.section>
+          )}
 
           {/* CTA */}
           <motion.section
@@ -468,29 +482,43 @@ export default function ProjectDetailPage() {
                   href={project.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#6366f1] text-white text-sm font-medium hover:bg-[#5558e6] transition-colors"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-all shadow-lg shadow-primary/20"
                 >
                   <Globe size={14} />
                   Visit Live Demo
                 </a>
-                <a
-                  href={project.githubClientUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-border bg-card text-sm text-foreground hover:bg-secondary transition-colors"
-                >
-                  <SiGithub size={14} />
-                  Client Repo
-                </a>
-                <a
-                  href={project.githubServerUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-border bg-card text-sm text-foreground hover:bg-secondary transition-colors"
-                >
-                  <SiGithub size={14} />
-                  Server Repo
-                </a>
+                {project.githubClientUrl === project.githubServerUrl ? (
+                  <a
+                    href={project.githubClientUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-border bg-card text-sm text-foreground hover:bg-secondary transition-colors"
+                  >
+                    <SiGithub size={14} />
+                    GitHub Repo
+                  </a>
+                ) : (
+                  <>
+                    <a
+                      href={project.githubClientUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-border bg-card text-sm text-foreground hover:bg-secondary transition-colors"
+                    >
+                      <SiGithub size={14} />
+                      Client Repo
+                    </a>
+                    <a
+                      href={project.githubServerUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-border bg-card text-sm text-foreground hover:bg-secondary transition-colors"
+                    >
+                      <SiGithub size={14} />
+                      Server Repo
+                    </a>
+                  </>
+                )}
               </div>
             </motion.div>
           </motion.section>
