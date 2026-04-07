@@ -175,7 +175,7 @@ export default function ContactWidget() {
         onClick={() => setIsOpen(!isOpen)}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="relative w-12 h-12 rounded-full bg-[#2a2a2a] border border-white/[0.08] shadow-lg shadow-black/30 flex items-center justify-center text-neutral-300 hover:text-white hover:bg-[#333] transition-colors"
+        className={`relative w-12 h-12 rounded-full bg-[#2a2a2a] border border-white/[0.08] shadow-[0_4px_20px_rgba(0,0,0,0.5)] flex items-center justify-center text-neutral-300 hover:text-white hover:bg-[#33] transition-all duration-300 ${!isOpen ? "animate-float hover:shadow-[0_4px_25px_rgba(99,102,241,0.2)]" : ""}`}
         aria-label="Open contact form"
         id="contact-widget-trigger"
       >

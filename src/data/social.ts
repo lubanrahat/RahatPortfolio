@@ -17,11 +17,6 @@ export const socialLinks: SocialLink[] = [
     icon: "linkedin",
   },
   {
-    name: "YouTube",
-    url: "https://youtube.com/@lubanrahat",
-    icon: "youtube",
-  },
-  {
     name: "Instagram",
     url: "https://instagram.com/lubanrahat",
     icon: "instagram",

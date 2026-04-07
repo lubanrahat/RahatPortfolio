@@ -3,6 +3,8 @@ import { Inter, JetBrains_Mono, Geist } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
+import SmoothScrollProvider from "@/components/SmoothScrollProvider";
+import CursorGlow from "@/components/CursorGlow";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -62,7 +64,10 @@ export default function RootLayout({
           defaultTheme="dark"
           enableSystem
         >
-          {children}
+          <SmoothScrollProvider>
+            <CursorGlow />
+            {children}
+          </SmoothScrollProvider>
         </ThemeProvider>
       </body>
     </html>

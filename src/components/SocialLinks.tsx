@@ -3,7 +3,6 @@
 import {
   SiX,
   SiGithub,
-  SiYoutube,
   SiInstagram,
   SiDevdotto,
 } from "react-icons/si";
@@ -15,7 +14,7 @@ const iconComponents: Record<string, React.ComponentType<{ className?: string }>
   x: SiX,
   github: SiGithub,
   linkedin: FaLinkedinIn,
-  youtube: SiYoutube,
+  
   instagram: SiInstagram,
   devto: SiDevdotto,
   email: Mail,

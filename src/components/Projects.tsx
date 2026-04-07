@@ -1,16 +1,15 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { Globe, Play, ArrowRight } from "lucide-react";
 import { SiGithub } from "react-icons/si";
 import { useRouter } from "next/navigation";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { projects } from "@/data/projects";
 
-const fadeInUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
-};
+gsap.registerPlugin(ScrollTrigger);
 
 const techIconColors: Record<string, string> = {
   "Next.js 16": "#ffffff",
@@ -40,44 +39,136 @@ const techIconColors: Record<string, string> = {
   Bcrypt: "#a1a1aa",
 };
 
-export default function Projects() {
-  const router = useRouter();
+function TiltCard({
+  children,
+  className,
+  onClick,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+}) {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!cardRef.current || window.innerWidth < 768) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+
+    gsap.to(cardRef.current, {
+      rotateY: x * 4,
+      rotateX: -y * 4,
+      duration: 0.3,
+      ease: "power2.out",
+    });
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    if (!cardRef.current) return;
+    gsap.to(cardRef.current, {
+      rotateY: 0,
+      rotateX: 0,
+      duration: 0.5,
+      ease: "elastic.out(1, 0.5)",
+    });
+  }, []);
 
   return (
-    <motion.section
-      id="projects"
-      className="py-12"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-100px" }}
-      variants={{
-        visible: { transition: { staggerChildren: 0.1 } },
-      }}
+    <div
+      ref={cardRef}
+      className={className}
+      onClick={onClick}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ perspective: "800px", transformStyle: "preserve-3d" }}
     >
+      {children}
+    </div>
+  );
+}
+
+export default function Projects() {
+  const router = useRouter();
+  const sectionRef = useRef<HTMLElement>(null);
+  const headingRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Heading reveal
+      gsap.fromTo(
+        headingRef.current,
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.6,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: headingRef.current,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+
+      // Cards: alternating left/right stagger
+      cardsRef.current.forEach((card, i) => {
+        if (!card) return;
+        const fromX = i % 2 === 0 ? -40 : 40;
+        gsap.fromTo(
+          card,
+          { x: fromX, opacity: 0, scale: 0.95 },
+          {
+            x: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.7,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 88%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section ref={sectionRef} id="projects" className="py-12">
       <div className="max-w-[720px] mx-auto px-6">
-        <motion.div variants={fadeInUp} className="mb-6">
+        <div ref={headingRef} className="mb-6 opacity-0">
           <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
             Featured
           </p>
           <h2 className="text-2xl font-bold text-foreground">Projects</h2>
-        </motion.div>
+        </div>
 
         {/* Project Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {projects.map((project) => (
-            <motion.div key={project.id} variants={fadeInUp}>
-              <div 
-                onClick={() => router.push(`/projects/${project.slug}`)} 
+          {projects.map((project, i) => (
+            <div
+              key={project.id}
+              ref={(el) => { cardsRef.current[i] = el; }}
+              className="opacity-0"
+            >
+              <TiltCard
+                onClick={() => router.push(`/projects/${project.slug}`)}
                 className="block group cursor-pointer h-full"
               >
-                <div className="rounded-xl border border-border bg-card overflow-hidden card-hover flex flex-col h-full">
-                  {/* Project Image */}
+                <div className="rounded-xl border border-border bg-card overflow-hidden card-hover flex flex-col h-full transition-shadow duration-300 hover:shadow-xl hover:shadow-indigo-500/5">
+                  {/* Project Image with Ken Burns */}
                   <div className="relative aspect-16/10 overflow-hidden">
                     <Image
                       src={project.image}
                       alt={project.title}
                       fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="object-cover transition-transform duration-[8000ms] ease-linear group-hover:scale-110"
                     />
                     {/* Gradient overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-60" />
@@ -132,7 +223,7 @@ export default function Projects() {
                       {project.description}
                     </p>
 
-                    {/* Technologies - More compact icons only */}
+                    {/* Technologies */}
                     <div className="mt-auto mb-3">
                       <p className="text-[9px] text-muted-foreground uppercase tracking-wider mb-2">
                         Technologies
@@ -141,7 +232,7 @@ export default function Projects() {
                         {project.technologies.slice(0, 8).map((tech) => (
                           <div
                             key={tech}
-                            className="w-5 h-5 rounded-md flex items-center justify-center text-[8px] font-bold"
+                            className="w-5 h-5 rounded-md flex items-center justify-center text-[8px] font-bold transition-transform duration-200 group-hover:scale-110"
                             style={{
                               backgroundColor: `${techIconColors[tech] || "#666"}15`,
                               color: techIconColors[tech] || "#666",
@@ -159,11 +250,11 @@ export default function Projects() {
                     <div className="flex items-center justify-between pt-3 border-t border-border/50">
                       <div className="flex items-center gap-1">
                         <span
-                          className={`w-1 h-1 rounded-full ${
+                          className={`w-1.5 h-1.5 rounded-full ${
                             project.status === "operational"
-                              ? "bg-[#22c55e]"
+                              ? "bg-[#22c55e] shadow-[0_0_6px_rgba(34,197,94,0.4)]"
                               : project.status === "building"
-                                ? "bg-[#f59e0b]"
+                                ? "bg-[#f59e0b] shadow-[0_0_6px_rgba(245,158,11,0.4)]"
                                 : "bg-[#666]"
                           }`}
                         />
@@ -176,24 +267,26 @@ export default function Projects() {
                                 : "text-[#666]"
                           }`}
                         >
-                          {project.status === "operational" ? "Active" : "Building"}
+                          {project.status === "operational"
+                            ? "Active"
+                            : "Building"}
                         </span>
                       </div>
                       <span className="inline-flex items-center gap-1 text-[10px] text-muted-foreground group-hover:text-foreground transition-colors">
                         Details
                         <ArrowRight
                           size={10}
-                          className="group-hover:translate-x-0.5 transition-transform"
+                          className="group-hover:translate-x-1 transition-transform duration-300"
                         />
                       </span>
                     </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
+              </TiltCard>
+            </div>
           ))}
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }

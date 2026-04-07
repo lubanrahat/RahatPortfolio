@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import {
   SiReact,
@@ -20,11 +20,10 @@ import {
   SiPrisma,
 } from "react-icons/si";
 import { Cloud } from "lucide-react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-const fadeInUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
-};
+gsap.registerPlugin(ScrollTrigger);
 
 const skillIcons = [
   { icon: SiReact, color: "#61DAFB", name: "React" },
@@ -46,38 +45,113 @@ const skillIcons = [
 ];
 
 export default function About() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const headingRef = useRef<HTMLDivElement>(null);
+  const avatarRef = useRef<HTMLDivElement>(null);
+  const infoRef = useRef<HTMLDivElement>(null);
+  const skillsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Heading
+      gsap.fromTo(
+        headingRef.current,
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.6,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: headingRef.current,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+
+      // Avatar with scale + rotation
+      gsap.fromTo(
+        avatarRef.current,
+        { scale: 0.8, opacity: 0, rotation: -5 },
+        {
+          scale: 1,
+          opacity: 1,
+          rotation: 0,
+          duration: 0.8,
+          ease: "back.out(1.7)",
+          scrollTrigger: {
+            trigger: avatarRef.current,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+
+      // Info text
+      gsap.fromTo(
+        infoRef.current,
+        { x: 30, opacity: 0, filter: "blur(4px)" },
+        {
+          x: 0,
+          opacity: 1,
+          filter: "blur(0px)",
+          duration: 0.7,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: infoRef.current,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+
+      // Skill icons wave animation
+      const icons = skillsRef.current?.querySelectorAll(".skill-icon");
+      if (icons) {
+        gsap.fromTo(
+          icons,
+          { y: 20, opacity: 0, scale: 0.5 },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.4,
+            stagger: 0.04,
+            ease: "back.out(2)",
+            scrollTrigger: {
+              trigger: skillsRef.current,
+              start: "top 88%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <motion.section
-      id="about"
-      className="py-12"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-100px" }}
-      variants={{
-        visible: { transition: { staggerChildren: 0.1 } },
-      }}
-    >
+    <section ref={sectionRef} id="about" className="py-12">
       <div className="max-w-[720px] mx-auto px-6">
-        <motion.div variants={fadeInUp} className="mb-6">
+        <div ref={headingRef} className="mb-6 opacity-0">
           <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
             About
           </p>
           <h2 className="text-2xl font-bold text-foreground">Me</h2>
-        </motion.div>
+        </div>
 
-        <motion.div
-          variants={fadeInUp}
-          className="flex flex-col sm:flex-row gap-6 items-start"
-        >
+        <div className="flex flex-col sm:flex-row gap-6 items-start">
           {/* Avatar */}
-          <div className="relative flex-shrink-0 group">
-            <div className="w-[160px] h-[160px] rounded-2xl overflow-hidden ring-2 ring-[#f5c518]/40 shadow-[0_0_30px_rgba(245,197,24,0.15)]">
+          <div ref={avatarRef} className="relative flex-shrink-0 group opacity-0">
+            <div className="w-[160px] h-[160px] rounded-2xl overflow-hidden ring-2 ring-[#f5c518]/40 animate-glow-pulse">
               <Image
                 src="/me.jpg"
                 alt="Luban Rahat"
                 width={160}
                 height={160}
-                className="object-cover"
+                className="object-cover animate-float"
               />
             </div>
             {/* YouTube label on hover */}
@@ -89,7 +163,7 @@ export default function About() {
           </div>
 
           {/* Info */}
-          <div className="flex-1">
+          <div ref={infoRef} className="flex-1 opacity-0">
             <h3 className="text-xl font-bold text-foreground mb-3">
               Luban Rahat
             </h3>
@@ -100,7 +174,7 @@ export default function About() {
             </p>
 
             {/* Skills */}
-            <div>
+            <div ref={skillsRef}>
               <p className="text-sm font-semibold text-foreground mb-3">
                 Skills
               </p>
@@ -110,11 +184,11 @@ export default function About() {
                   return (
                     <div
                       key={skill.name}
-                      className="group/skill relative"
+                      className="skill-icon group/skill relative"
                       title={skill.name}
                     >
                       <Icon
-                        className="w-6 h-6 transition-transform duration-200 hover:scale-125 cursor-pointer"
+                        className="w-6 h-6 transition-all duration-300 hover:scale-125 hover:drop-shadow-[0_0_8px_currentColor] cursor-pointer"
                         style={{ color: skill.color }}
                       />
                       <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover/skill:opacity-100 transition-opacity pointer-events-none">
@@ -128,8 +202,8 @@ export default function About() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
-    </motion.section>
+    </section>
   );
 }
