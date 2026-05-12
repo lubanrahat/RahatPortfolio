@@ -1,4 +1,4 @@
-import FloatingDock from "@/components/FloatingDock";
+import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Experience from "@/components/Experience";
 import Projects from "@/components/Projects";
@@ -11,7 +11,7 @@ import ContactWidget from "@/components/ContactWidget";
 export default function Home() {
   return (
     <>
-      <FloatingDock />
+      <Navbar />
       <main>
         <Hero />
         <Experience />

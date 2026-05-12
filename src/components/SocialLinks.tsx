@@ -32,7 +32,7 @@ export default function SocialLinks() {
             href={link.url}
             target={link.icon === "email" ? undefined : "_blank"}
             rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-foreground transition-colors duration-200 p-1"
+            className="p-1 text-muted-foreground transition duration-200 hover:scale-110 hover:text-accent"
             aria-label={link.name}
           >
             <Icon className="w-[18px] h-[18px]" />
